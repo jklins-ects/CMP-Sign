@@ -76,7 +76,7 @@ pac_path = (
     # <- 1-tuple so it's iterable
 )
 
-pac_runaway = ((139,), (138,), (137,)) + pac_path
+pac_runaway = {"start": pac_path[-1][-1], "end": pac_path[0][0]}
 # ----------------------------
 # NeoPixel setup (RGBW strip)
 # NOTE: pixel_order=neopixel.GRBW means tuple is (G,R,B,W)
@@ -98,6 +98,45 @@ def safe_set(idx, color):
 def show_and_wait(t=0.05):
     pixels.show()
     time.sleep(t)
+
+
+def pac_runaway_from_ghosts(color=(255, 255, 0, 0), delay=0.1, flee_speed=0.1):
+    super_color = (0, 0, 0, 150)
+    safe_set(pac_runaway["end"], super_color)
+    show_and_wait(delay)
+    distance_between = 2
+    ghosts = (
+        (255, 0, 0, 0),
+        (255, 184, 255, 0),
+        (0, 255, 255, 0),
+        (255, 184, 82, 0)
+    )
+    # for i in range(pac_runaway["start"], pac_runaway["end"] + 1):
+    for i in range(pac_runaway["start"], pac_runaway["end"]):
+        pixels.fill((0, 0, 0, 0))
+        safe_set(pac_runaway["end"], super_color)
+        safe_set(i, color)
+        for j, ghost_color in enumerate(ghosts):
+            safe_set(i - (j+distance_between), ghost_color)
+
+        show_and_wait(delay)
+    clear_all()
+    for i in range(pac_runaway["end"], pac_runaway["start"]-1, -1):
+        # pixels.fill((0, 0, 0, 0))
+        count = 0
+        for j in range(len(ghosts)-1, -1, -1):
+            ghost_loc = i - (j+distance_between)
+            if ghost_loc >= pac_runaway["start"] + count:
+                safe_set(ghost_loc, (0, 0, 255, 0))
+                safe_set(ghost_loc + 1, (0, 0, 0, 0))
+            count += 1
+        safe_set(i, color)
+        safe_set(i+1, (0, 0, 0, 0))
+        show_and_wait(delay)
+    for i in range(pac_runaway["start"], pac_runaway["start"]-8, -1):
+        safe_set(i, color)
+        safe_set(i+1, (0, 0, 0, 0))
+        show_and_wait(flee_speed)
 
 
 def move_pac(path=pac_path, color=(255, 255, 0, 0), delay=0.05):
@@ -176,7 +215,9 @@ while True:
     draw_arrow(color=(0, 0, 0, 0))
     time.sleep(0.2)
 
-    move_pac(tuple(reversed(pac_runaway)))
+    pac_runaway_from_ghosts(delay=.2, flee_speed=.05)
+
+    # move_pac(tuple(reversed(pac_runaway)))
     # Tiny pause and reset
     time.sleep(0.2)
     clear_all()
