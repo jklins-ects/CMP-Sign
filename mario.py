@@ -14,14 +14,15 @@ BL = (0, 0, 255, 0)
 RD = (189, 8, 8, 0)
 SK = (217, 167, 57, 0)
 HR = (126, 153, 83, 0)
+PR = (52, 21, 57, 0)
 
 mario = (
     (BK, BK, BK, BK, BK, BK, RD, RD, RD, RD, RD, BK, BK, BK, BK, BK),
     (BK, BK, BK, BK, BK, RD, RD, RD, RD, RD, RD, RD, RD, BK, BK, BK),
     (BK, BK, BK, BK, BK, HR, HR, HR, SK, SK, HR, SK, BK, BK, BK, BK),
-    (BK, BK, BK, BK, HR, SK, HR, SK, SK, SK, HR, SK, SK, SK, BK, BK),
+    (BK, BK, BK, BK, HR, SK, HR, SK, SK, SK, PR, SK, SK, SK, BK, BK),
     (BK, BK, BK, BK, HR, SK, HR, HR, SK, SK, SK, HR, SK, SK, SK, BK),
-    (BK, BK, BK, BK, HR, HR, SK, SK, SK, SK, HR, HR, HR, HR, BK, BK),
+    (BK, BK, BK, BK, HR, HR, SK, SK, SK, SK, PR, PR, PR, PR, BK, BK),
     (BK, BK, BK, BK, BK, BK, SK, SK, SK, SK, SK, SK, SK, BK, BK, BK),
     (BK, BK, BK, BK, BK, RD, RD, BL, RD, RD, RD, BK, BK, BK, BK, BK),
     (BK, BK, BK, BK, RD, RD, RD, BL, RD, RD, BL, RD, RD, RD, BK, BK),
@@ -44,7 +45,7 @@ pixels = neopixel.NeoPixel(
 
 def xy_to_index(x, y):
     """Map (x,y) -> index for a zigzag-wired matrix, origin at top-left."""
-    return y * WIDTH + (x if y % 2 == 0 else (WIDTH - 1 - x))
+    return y * WIDTH + (x if y % 2 == 1 else (WIDTH - 1 - x))
 
 
 def set_px(x, y, color):
